@@ -1,5 +1,7 @@
+
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import AivantaAssistant from "@/components/AivantaAssistant";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -14,16 +16,22 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "Aivanta AI — All-in-One AI Workspace",
-  description: "Write, create, learn, and build with powerful AI tools in one simple workspace.",
+  description:
+    "Write, create, learn, and build with Aivanta AI tools.",
 };
 
-export default function RootLayout({ children }: LayoutProps<"/">) {
+export default function RootLayout({
+  children,
+}: Readonly<{ children: React.ReactNode }>) {
   return (
     <html
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col">{children}</body>
+      <body className="min-h-full flex flex-col">
+        <AivantaAssistant />
+        {children}
+      </body>
     </html>
   );
 }

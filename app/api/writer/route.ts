@@ -1,22 +1,8 @@
-
-import OpenAI from "openai";
 import { NextResponse } from "next/server";
-
-export const runtime = "nodejs";
 
 export async function POST(request: Request) {
   try {
-    const apiKey = process.env.OPENAI_API_KEY;
-
-    if (!apiKey) {
-      return NextResponse.json(
-        { error: "AI service is not configured." },
-        { status: 500 }
-      );
-    }
-
-    const body = await request.json();
-    const { topic, type, tone, length } = body;
+    const { topic, type, tone, length } = await request.json();
 
     if (
       typeof topic !== "string" ||
@@ -29,51 +15,35 @@ export async function POST(request: Request) {
       );
     }
 
-    const allowedTypes = [
-      "Essay", "Email", "Article", "Product description",
-      "Blog post", "Story", "Business proposal", "Other"
-    ];
+    const safeType = typeof type === "string" ? type : "Other";
+    const safeTone = typeof tone === "string" ? tone : "Professional";
+    const safeLength = typeof length === "string" ? length : "Medium";
 
-    const allowedTones = [
-      "Professional", "Casual", "Creative",
-      "Academic", "Friendly", "Persuasive"
-    ];
+    const result = `AIVANTA AI WRITER — DEMO MODE
 
-    const allowedLengths = ["Short", "Medium", "Long"];
-
-    const safeType = allowedTypes.includes(type) ? type : "Other";
-    const safeTone = allowedTones.includes(tone) ? tone : "Professional";
-    const safeLength = allowedLengths.includes(length) ? length : "Medium";
-
-    const tokenLimits: Record<string, number> = {
-      Short: 500,
-      Medium: 1000,
-      Long: 1600
-    };
-
-    const openai = new OpenAI({ apiKey });
-
-    const response = await openai.responses.create({
-      model: "gpt-4o-mini",
-      instructions:
-        "You are Aivanta AI Writer. Create clear, original, useful writing based on the user's request. Follow the requested format, tone, and length.",
-      input: `Writing type: ${safeType}
+Writing type: ${safeType}
 Tone: ${safeTone}
 Length: ${safeLength}
 
-User instructions:
-${topic}`,
-      max_output_tokens: tokenLimits[safeLength]
-    });
+Your topic:
+${topic}
 
-    return NextResponse.json({
-      result: response.output_text
-    });
-  } catch (error) {
-    console.error("Aivanta Writer error:", error);
+DEMO CONTENT
 
+This is a demonstration of the Aivanta AI Writer interface.
+
+Your topic has been received successfully. The writing tool is currently running in local demo mode, so this is sample content rather than AI-generated writing.
+
+Your selected writing style is ${safeTone.toLowerCase()}.
+
+When a suitable AI service is connected, Aivanta will generate original content based on your instructions.
+
+Thank you for testing Aivanta!`;
+
+    return NextResponse.json({ result });
+  } catch {
     return NextResponse.json(
-      { error: "Writing generation failed. Please check the server terminal." },
+      { error: "Something went wrong. Please try again." },
       { status: 500 }
     );
   }
