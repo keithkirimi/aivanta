@@ -5,36 +5,42 @@ const tools = [
     name: "AI Writer",
     description: "Write essays, emails, articles and professional content.",
     tag: "Writing",
+    href: "/writer",
   },
   {
     icon: "💡",
     name: "Business Name Generator",
     description: "Discover creative names and ideas for your next business.",
     tag: "Business",
+    href: "#",
   },
   {
     icon: "📄",
     name: "CV Builder",
     description: "Create professional CVs that help you stand out.",
     tag: "Career",
+    href: "#",
   },
   {
     icon: "📱",
     name: "Social Media Generator",
     description: "Generate captions, posts and content ideas.",
     tag: "Social",
+    href: "#",
   },
   {
     icon: "💻",
     name: "Coding Assistant",
     description: "Understand code, solve problems and build projects.",
     tag: "Development",
+    href: "#",
   },
   {
     icon: "🎓",
     name: "Study Assistant",
     description: "Learn difficult topics and understand concepts faster.",
     tag: "Education",
+    href: "#",
   },
 ];
 
@@ -43,11 +49,7 @@ const plans = [
     name: "Free",
     price: "KSh 0",
     description: "Get started with AI.",
-    features: [
-      "Limited AI usage",
-      "Access to basic tools",
-      "Standard responses",
-    ],
+    features: ["Limited AI usage", "Basic tools", "Standard responses"],
     featured: false,
   },
   {
@@ -56,7 +58,7 @@ const plans = [
     description: "For everyday creators.",
     features: [
       "Higher usage limits",
-      "Access to all standard tools",
+      "All standard tools",
       "Faster responses",
       "More generations",
     ],
@@ -80,7 +82,7 @@ export default function Home() {
   return (
     <main className="min-h-screen overflow-hidden bg-[#08090d] text-white">
       <nav className="mx-auto flex max-w-7xl items-center justify-between px-6 py-6">
-        <a href="#" className="flex items-center gap-3">
+        <a href="/" className="flex items-center gap-3">
           <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-violet-500 to-blue-500 text-xl font-bold">
             A
           </div>
@@ -95,10 +97,7 @@ export default function Home() {
           <a href="#pricing" className="hover:text-white">Pricing</a>
         </div>
 
-        <a
-          href="#pricing"
-          className="rounded-xl bg-white px-5 py-3 text-sm font-semibold text-black transition hover:bg-gray-200"
-        >
+        <a href="#tools" className="rounded-xl bg-white px-5 py-3 text-sm font-semibold text-black hover:bg-gray-200">
           Get started
         </a>
       </nav>
@@ -127,16 +126,10 @@ export default function Home() {
           </p>
 
           <div className="mt-10 flex flex-col justify-center gap-4 sm:flex-row">
-            <a
-              href="#tools"
-              className="rounded-xl bg-gradient-to-r from-violet-600 to-blue-600 px-8 py-4 font-semibold transition hover:scale-105"
-            >
+            <a href="#tools" className="rounded-xl bg-gradient-to-r from-violet-600 to-blue-600 px-8 py-4 font-semibold transition hover:scale-105">
               Explore AI tools →
             </a>
-            <a
-              href="#pricing"
-              className="rounded-xl border border-white/15 bg-white/5 px-8 py-4 font-semibold transition hover:bg-white/10"
-            >
+            <a href="#pricing" className="rounded-xl border border-white/15 bg-white/5 px-8 py-4 font-semibold hover:bg-white/10">
               View pricing
             </a>
           </div>
@@ -172,13 +165,18 @@ export default function Home() {
                   {tool.tag}
                 </span>
               </div>
+
               <h3 className="text-xl font-semibold">{tool.name}</h3>
               <p className="mt-3 leading-7 text-gray-400">
                 {tool.description}
               </p>
-              <div className="mt-7 text-sm font-medium text-violet-400">
-                Coming soon →
-              </div>
+
+              <a
+                href={tool.href}
+                className="mt-7 block text-sm font-semibold text-violet-400 transition hover:text-violet-300"
+              >
+                {tool.href === "/writer" ? "Open AI Writer →" : "Coming soon →"}
+              </a>
             </div>
           ))}
         </div>
@@ -213,7 +211,9 @@ export default function Home() {
                   <span className="text-2xl text-violet-400">{icon}</span>
                   <div>
                     <h3 className="font-semibold">{title}</h3>
-                    <p className="mt-2 text-sm leading-6 text-gray-400">{description}</p>
+                    <p className="mt-2 text-sm leading-6 text-gray-400">
+                      {description}
+                    </p>
                   </div>
                 </div>
               </div>
@@ -250,13 +250,17 @@ export default function Home() {
                   MOST POPULAR
                 </div>
               )}
+
               <h3 className="text-2xl font-bold">{plan.name}</h3>
               <p className="mt-2 text-sm text-gray-400">{plan.description}</p>
+
               <div className="mt-7 text-4xl font-bold">
                 {plan.price}
                 <span className="text-sm font-normal text-gray-400"> / month</span>
               </div>
+
               <div className="my-8 h-px bg-white/10" />
+
               <ul className="space-y-4">
                 {plan.features.map((feature) => (
                   <li key={feature} className="flex gap-3 text-sm text-gray-300">
@@ -265,6 +269,7 @@ export default function Home() {
                   </li>
                 ))}
               </ul>
+
               <a
                 href="#tools"
                 className={`mt-9 block rounded-xl px-5 py-3 text-center text-sm font-semibold transition ${
@@ -280,32 +285,16 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="px-6 pb-24">
-        <div className="mx-auto max-w-5xl rounded-3xl border border-violet-400/20 bg-gradient-to-br from-violet-600/20 to-blue-600/10 px-8 py-16 text-center">
-          <h2 className="text-3xl font-bold sm:text-5xl">
-            Your ideas deserve more.
-          </h2>
-          <p className="mx-auto mt-5 max-w-xl leading-7 text-gray-400">
-            Discover a smarter way to write, create, learn and build.
-            Your next big idea starts here.
-          </p>
-          <a
-            href="#tools"
-            className="mt-8 inline-block rounded-xl bg-white px-8 py-4 font-semibold text-black transition hover:bg-gray-200"
-          >
-            Explore Aivanta →
-          </a>
-        </div>
-      </section>
-
-      <footer className="border-t border-white/10 px-6 py-9">
-        <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-4 text-sm text-gray-500 sm:flex-row">
-          <span className="text-lg font-bold text-white">
-            aivanta<span className="text-violet-400">.</span>
-          </span>
-          <span>Your ideas. Amplified.</span>
-          <span>© 2026 Aivanta. All rights reserved.</span>
-        </div>
+      <footer className="border-t border-white/10 px-6 py-10 text-center">
+        <p className="text-xl font-bold">
+          aivanta<span className="text-violet-400">.</span>
+        </p>
+        <p className="mt-3 text-sm text-gray-500">
+          Your ideas, powered by AI.
+        </p>
+        <p className="mt-5 text-xs text-gray-600">
+          © {new Date().getFullYear()} Aivanta. All rights reserved.
+        </p>
       </footer>
     </main>
   );
