@@ -1,0 +1,31 @@
+
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "name": "ai-vanta",
+  "main": ".open-next/worker.js",
+  "compatibility_date": "2026-11-22",
+  "compatibility_flags": [
+    "nodejs_compat",
+    "global_fetch_strictly_public"
+  ],
+  "assets": {
+    "directory": ".open-next/assets",
+    "binding": "ASSETS"
+  },
+  "services": [
+    {
+      "binding": "WORKER_SELF_REFERENCE",
+      "service": "ai-vanta"
+    }
+  ],
+  "d1_databases": [
+    {
+      "binding": "aivanta_db",
+      "database_name": "aivanta-db",
+      "database_id": "e42a301b-38f0-4ae6-8e57-a64272b71977"
+    }
+  ],
+  "observability": {
+    "enabled": true
+  }
+}

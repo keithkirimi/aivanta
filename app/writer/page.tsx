@@ -3,6 +3,28 @@
 
 import { useState } from "react";
 
+type WriterResponse = {
+  error?: string;
+  result?: string;
+};
+
+function getWriterResponse(value: unknown): WriterResponse {
+  if (
+    value === null ||
+    typeof value !== "object" ||
+    Array.isArray(value)
+  ) {
+    return {};
+  }
+
+  const record = value as Record<string, unknown>;
+
+  return {
+    error: typeof record.error === "string" ? record.error : undefined,
+    result: typeof record.result === "string" ? record.result : undefined,
+  };
+}
+
 export default function WriterPage() {
   const [type, setType] = useState("Essay");
   const [topic, setTopic] = useState("");
@@ -36,7 +58,8 @@ export default function WriterPage() {
         }),
       });
 
-      const data = await response.json();
+      const parsed: unknown = await response.json().catch(() => ({}));
+      const data = getWriterResponse(parsed);
 
       if (!response.ok) {
         throw new Error(data.error || "Something went wrong.");

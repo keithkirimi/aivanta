@@ -1,4 +1,3 @@
-
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import AivantaAssistant from "@/components/AivantaAssistant";
@@ -15,9 +14,9 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Aivanta AI — All-in-One AI Workspace",
+  title: "Aivanta — Your AI Workspace",
   description:
-    "Write, create, learn, and build with Aivanta AI tools.",
+    "One workspace for writing, coding, learning, creating, and exploring.",
 };
 
 export default function RootLayout({
@@ -28,9 +27,8 @@ export default function RootLayout({
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col">
-        <AivantaAssistant />
-        {children}
+      <body className="min-h-full bg-[#080910] font-sans text-white">
+        <AivantaAssistant>{children}</AivantaAssistant>
       </body>
     </html>
   );

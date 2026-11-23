@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useState } from "react";
@@ -10,63 +9,73 @@ export default function BusinessNameGenerator() {
   const [style, setStyle] = useState("Modern");
   const [names, setNames] = useState<string[]>([]);
   const [status, setStatus] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  function generateNames() {
+  async function generateNames() {
     if (!industry.trim()) {
       setNames([]);
       setStatus("Please enter your business industry.");
       return;
     }
 
-    const cleanWord = (keyword.trim() || industry.trim())
-      .replace(/[^a-zA-Z0-9 ]/g, "")
-      .trim()
-      .split(/\s+/)[0];
+    if (loading) return;
 
-    if (!cleanWord) {
+    setLoading(true);
+    setNames([]);
+    setStatus("Aivanta AI is creating your business names...");
+
+    try {
+      const response = await fetch("/api/business-name", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          industry: industry.trim(),
+          keyword: keyword.trim(),
+          style,
+        }),
+      });
+
+      const data: unknown = await response.json();
+
+      if (!data || typeof data !== "object") {
+        throw new Error("Aivanta returned an invalid response.");
+      }
+
+      const result = data as {
+        success?: boolean;
+        names?: unknown;
+        error?: string;
+      };
+
+      if (!response.ok || !result.success) {
+        throw new Error(
+          result.error || "Could not generate business names."
+        );
+      }
+
+      if (
+        !Array.isArray(result.names) ||
+        !result.names.every((name) => typeof name === "string")
+      ) {
+        throw new Error("Aivanta returned invalid name suggestions.");
+      }
+
+      setNames(result.names);
+      setStatus(
+        `Successfully generated ${result.names.length} AI business name ideas!`
+      );
+    } catch (error) {
       setNames([]);
-      setStatus("Please enter a valid keyword or industry.");
-      return;
+      setStatus(
+        error instanceof Error
+          ? error.message
+          : "Something went wrong. Please try again."
+      );
+    } finally {
+      setLoading(false);
     }
-
-    const prefixes: Record<string, string[]> = {
-      Modern: ["Nova", "Nexa", "Vanta", "Nexora", "Zentra"],
-      Luxury: ["Luxe", "Velora", "Aurelia", "Prestige", "Royale"],
-      Creative: ["Pixel", "Dream", "Spark", "Wonder", "Imagine"],
-      Simple: ["Pure", "Bright", "Ever", "True", "Clear"],
-      Bold: ["Titan", "Apex", "Prime", "Vertex", "Maverick"],
-    };
-
-    const suffixes = [
-      "Labs",
-      "Studio",
-      "Works",
-      "Hub",
-      "Co",
-      "House",
-      "Group",
-      "Collective",
-      "Solutions",
-      "Edge",
-    ];
-
-    const selected = prefixes[style] || prefixes.Modern;
-
-    const generated = [
-      `${selected[0]} ${cleanWord}`,
-      `${cleanWord} ${suffixes[0]}`,
-      `${selected[1]} ${suffixes[1]}`,
-      `${cleanWord} ${suffixes[2]}`,
-      `${selected[2]} ${suffixes[3]}`,
-      `${cleanWord} ${suffixes[4]}`,
-      `${selected[3]} ${cleanWord}`,
-      `${cleanWord} ${suffixes[5]}`,
-      `${selected[4]} ${suffixes[6]}`,
-      `${cleanWord} ${suffixes[7]}`,
-    ];
-
-    setNames([...new Set(generated)]);
-    setStatus("Here are your demo name ideas!");
   }
 
   async function copyName(name: string) {
@@ -101,8 +110,8 @@ export default function BusinessNameGenerator() {
           </h1>
 
           <p className="mt-4 max-w-2xl leading-7 text-gray-400">
-            Find inspiration for your next brand. Explore name ideas based on
-            your industry, keywords and preferred style.
+            Find inspiration for your next brand. Explore original AI-generated
+            name ideas based on your industry, keywords and preferred style.
           </p>
         </div>
 
@@ -120,6 +129,7 @@ export default function BusinessNameGenerator() {
               value={industry}
               onChange={(e) => setIndustry(e.target.value)}
               placeholder="e.g. Clothing, technology, food"
+              maxLength={150}
               className="mb-6 w-full rounded-xl border border-white/10 bg-[#151620] px-4 py-4 text-white outline-none placeholder:text-gray-600 focus:border-violet-500"
             />
 
@@ -131,6 +141,7 @@ export default function BusinessNameGenerator() {
               value={keyword}
               onChange={(e) => setKeyword(e.target.value)}
               placeholder="e.g. Future, luxury, nature"
+              maxLength={100}
               className="mb-6 w-full rounded-xl border border-white/10 bg-[#151620] px-4 py-4 text-white outline-none placeholder:text-gray-600 focus:border-violet-500"
             />
 
@@ -153,9 +164,17 @@ export default function BusinessNameGenerator() {
             <button
               type="button"
               onClick={generateNames}
-              className="w-full rounded-xl bg-gradient-to-r from-violet-600 to-blue-600 px-6 py-4 font-semibold transition hover:opacity-90"
+              disabled={loading}
+              className="flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-violet-600 to-blue-600 px-6 py-4 font-semibold transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60"
             >
-              ✨ Generate name ideas
+              {loading ? (
+                <>
+                  <span className="h-5 w-5 animate-spin rounded-full border-2 border-white/30 border-t-white" />
+                  Generating names...
+                </>
+              ) : (
+                <>✨ Generate name ideas</>
+              )}
             </button>
 
             {status && (
@@ -169,8 +188,8 @@ export default function BusinessNameGenerator() {
             <div className="mb-7 flex items-center justify-between">
               <h2 className="text-xl font-semibold">Name ideas</h2>
 
-              <span className="rounded-full border border-white/10 px-3 py-1 text-xs text-gray-400">
-                Demo mode
+              <span className="rounded-full border border-violet-500/20 bg-violet-500/10 px-3 py-1 text-xs text-violet-300">
+                AI powered
               </span>
             </div>
 
@@ -181,7 +200,9 @@ export default function BusinessNameGenerator() {
                     key={`${name}-${index}`}
                     className="flex items-center justify-between gap-3 rounded-xl border border-white/10 bg-[#151620] p-4"
                   >
-                    <span className="font-medium">{name}</span>
+                    <span className="min-w-0 break-words font-medium">
+                      {name}
+                    </span>
 
                     <button
                       type="button"
@@ -195,20 +216,27 @@ export default function BusinessNameGenerator() {
               </div>
             ) : (
               <div className="flex min-h-80 flex-col items-center justify-center text-center">
-                <div className="mb-5 text-5xl">✨</div>
+                <div className="mb-5 text-5xl">
+                  {loading ? "✨" : "💡"}
+                </div>
 
                 <h3 className="font-semibold">
-                  Your ideas will appear here
+                  {loading
+                    ? "Creating your ideas..."
+                    : "Your ideas will appear here"}
                 </h3>
 
                 <p className="mt-3 max-w-xs text-sm leading-6 text-gray-500">
-                  Describe your business and generate your first name ideas.
+                  {loading
+                    ? "Aivanta AI is thinking of creative names for your business."
+                    : "Describe your business and generate your first AI name ideas."}
                 </p>
               </div>
             )}
 
             <p className="mt-6 text-xs leading-5 text-gray-500">
-              Demo-generated suggestions only. Check domain availability and
+              AI-generated suggestions are not guaranteed to be unique or
+              legally available. Check domain availability, trademarks and
               business-name registration before choosing a name.
             </p>
           </section>

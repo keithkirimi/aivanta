@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240" fill="none">
+  <defs>
+    <linearGradient id="orb" x1="35" y1="35" x2="205" y2="210" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#35E8FF"/>
+      <stop offset=".38" stop-color="#5275FF"/>
+      <stop offset=".72" stop-color="#A855F7"/>
+      <stop offset="1" stop-color="#FF4FD8"/>
+    </linearGradient>
+    <linearGradient id="shine" x1="65" y1="45" x2="175" y2="190" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#fff"/>
+      <stop offset=".45" stop-color="#BDEBFF"/>
+      <stop offset="1" stop-color="#C084FC"/>
+    </linearGradient>
+    <filter id="glow" x="0" y="0" width="240" height="240" filterUnits="userSpaceOnUse">
+      <feGaussianBlur stdDeviation="9"/>
+    </filter>
+  </defs>
+  <circle cx="120" cy="120" r="78" fill="url(#orb)" opacity=".24" filter="url(#glow)"/>
+  <path d="M120 22 205 178c7 13-3 29-18 29H53c-15 0-25-16-18-29L120 22Z" stroke="url(#orb)" stroke-width="15" stroke-linejoin="round"/>
+  <path d="m120 65 57 108h-30l-27-53-27 53H63l57-108Z" fill="url(#shine)"/>
+  <path d="M43 133c32-42 122-58 158-6" stroke="url(#orb)" stroke-width="10" stroke-linecap="round"/>
+  <path d="M52 151c40 25 98 26 136-1" stroke="#35DDFB" stroke-width="5" stroke-linecap="round" opacity=".9"/>
+  <circle cx="190" cy="76" r="8" fill="#FF65DC"/>
+  <circle cx="45" cy="87" r="5" fill="#35E8FF"/>
+</svg>
